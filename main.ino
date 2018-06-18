@@ -1,10 +1,9 @@
 int pwmPin = 10;
-int ambientLightPin = A7;
 int maxPWM = 255;
 
-void fadeFlash (int number_of_times, int fadeDelay, int maxPWM)
+void fadeSequence (int count, int fadeDelay, int maxPWM)
 {
-  for (int x=1; x <= number_of_times; x++)
+  for (int x=1; x <= count; x++)
   {
     for (int i=0; i <= maxPWM; i++)
     {
@@ -16,47 +15,32 @@ void fadeFlash (int number_of_times, int fadeDelay, int maxPWM)
     {
       analogWrite(pwmPin, i);
       delay(fadeDelay);
-    } 
+    }
   }
 }
 
-void flash(int number_of_times, int flashDelay)
+void flashSequence(int count, int flashDelay, int maxPWM)
 {
-  for (int x=1; x <= number_of_times; x++)
+  for (int x=1; x <= count; x++)
   {
-    analogWrite(pwmPin, ambientLightToPWM(ambientLightPin));
+    analogWrite(pwmPin, maxPWM);
     delay(flashDelay);
     analogWrite(pwmPin, 0);
     delay(flashDelay); 
   }
 }
 
-int ambientLightToPWM(int ambientLightPin)
-{
-  int PWM = 1 + (analogRead(ambientLightPin) / (1024/255));
-  Serial.println("Actual Light Level:" + String(PWM));
-
-  if (PWM >= 255)
-  {
-    PWM = 255;
-  }
-  Serial.println("Adjusted Light Level:" + String(PWM));
-  Serial.println();
-  return PWM;
-}
-
 void setup()
 {
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(pwmPin, OUTPUT);
-  pinMode(ambientLightPin, INPUT);
   Serial.begin(115200);
 }
 
 // the loop function runs over and over again forever
 void loop()
 {
-  // fadeFlash(10, 5, ambientLightToPWM(ambientLightPin));
-  // delay(500);
-  flash(10, 500); 
+  fadeSequence(10, 5, maxPWM);
+  delay(500);
+  flashSequence(10, 500, maxPWM); 
 }
